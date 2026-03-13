@@ -13,58 +13,51 @@ export function AuthProvider({ children }) {
                 .from("profiles")
                 .select("*")
                 .eq("id", userId)
-                .single();
+                .maybeSingle(); // IMPORTANT change
 
             if (error) throw error;
+
             setProfile(data);
         } catch (err) {
-            console.error("Could not load profile:", err.message);
+            console.error("Profile fetch error:", err.message);
             setProfile(null);
-            // We do NOT clear the user here — a failed profile fetch
-            // doesn't mean they're logged out, just that the DB was slow
-            // AppRoutes will show "Profile Not Found" which has a retry button
         }
     };
 
     useEffect(() => {
+        const initializeAuth = async () => {
+            console.log("Initializing auth...");
+
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+
+            if (session?.user) {
+                setUser(session.user);
+
+                // don't block loading
+                fetchProfile(session.user.id);
+            }
+
+            setLoading(false);
+        };
+
+        initializeAuth();
+
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === "INITIAL_SESSION") {
-                try {
-                    // INITIAL_SESSION sometimes passes null session even when one exists
-                    // so we double-check with getSession() as a fallback
-                    let activeSession = session;
-                    if (!activeSession) {
-                        const { data } = await supabase.auth.getSession();
-                        activeSession = data.session;
-                    }
-                    if (activeSession?.user) {
-                        setUser(activeSession.user);
-                        await fetchProfile(activeSession.user.id);
-                    }
-                } finally {
-                    setLoading(false); // always runs no matter what
-                }
-                return;
-            }
+        } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log("Auth event:", event);
 
-            if (event === "SIGNED_IN") {
-                setLoading(true);
+            if (session?.user) {
                 setUser(session.user);
-                await fetchProfile(session.user.id);
-                setLoading(false);
-                return;
-            }
-
-            if (event === "SIGNED_OUT") {
+                fetchProfile(session.user.id);
+            } else {
                 setUser(null);
                 setProfile(null);
-                setLoading(false);
-                return;
             }
 
-            // TOKEN_REFRESHED, USER_UPDATED → silently ignored
+            setLoading(false);
         });
 
         return () => subscription.unsubscribe();
@@ -75,6 +68,7 @@ export function AuthProvider({ children }) {
             email,
             password,
         });
+
         if (error) throw error;
     };
 
