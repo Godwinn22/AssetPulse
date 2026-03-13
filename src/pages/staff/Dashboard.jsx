@@ -1,5 +1,5 @@
 // src/pages/staff/Dashboard.jsx
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 import { Monitor, LogOut } from "lucide-react";
 
 export default function StaffDashboard() {

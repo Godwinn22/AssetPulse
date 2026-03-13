@@ -1,6 +1,6 @@
 // src/pages/Login.jsx
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/useAuth";
 import { Monitor, Mail, Lock, AlertCircle } from "lucide-react";
 
 export default function Login() {
