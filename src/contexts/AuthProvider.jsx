@@ -9,25 +9,20 @@ export function AuthProvider({ children }) {
 
     const fetchProfile = async (userId) => {
         try {
-            // Promise.race runs both promises simultaneously
-            // Whichever settles first wins — if Supabase hangs for 5 seconds,
-            // the timeout wins and throws an error, which catch() handles cleanly
-            const { data, error } = await Promise.race([
-                supabase.from("profiles").select("*").eq("id", userId).single(),
-                new Promise((_, reject) =>
-                    setTimeout(
-                        () => reject(new Error("Profile fetch timed out")),
-                        5000,
-                    ),
-                ),
-            ]);
+            const { data, error } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", userId)
+                .single();
 
             if (error) throw error;
             setProfile(data);
         } catch (err) {
             console.error("Could not load profile:", err.message);
             setProfile(null);
-            setUser(null);
+            // We do NOT clear the user here — a failed profile fetch
+            // doesn't mean they're logged out, just that the DB was slow
+            // AppRoutes will show "Profile Not Found" which has a retry button
         }
     };
 
