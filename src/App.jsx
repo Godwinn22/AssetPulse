@@ -1,14 +1,14 @@
-import "./App.css";
+// src/App.jsx
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import AppRoutes from "./components/AppRoutes";
 
-function App() {
-
+export default function App() {
     return (
-        <>
-            <div>
-				AssetPulse
-			</div>
-        </>
+        <BrowserRouter>
+            <AuthProvider>
+                <AppRoutes />
+            </AuthProvider>
+        </BrowserRouter>
     );
 }
-
-export default App;
