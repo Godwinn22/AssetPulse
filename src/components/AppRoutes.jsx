@@ -20,7 +20,7 @@ function AutoRetry() {
             <div className="bg-white p-8 rounded-xl shadow text-center max-w-sm">
                 <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                 <p className="text-gray-700 font-semibold mb-1">
-                    Setting things up...
+                    Loading AssetPulse...
                 </p>
                 <p className="text-gray-400 text-sm">
                     This will refresh automatically
