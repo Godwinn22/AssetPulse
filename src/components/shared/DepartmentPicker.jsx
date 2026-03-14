@@ -65,6 +65,14 @@ export default function DepartmentPicker({ value, onChange }) {
         };
     }, []);
 
+    const filteredDepartment = departments.filter((dept) =>
+        dept.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+	const showCreateOption = search.trim() !== "" && !departments.some(
+		(dept) => dept.name.toLowerCase() === search.toLowerCase()
+	);
+
     return (
         <div ref={dropdownRef} className="relative">
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
