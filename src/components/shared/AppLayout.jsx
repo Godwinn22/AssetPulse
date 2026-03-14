@@ -7,23 +7,11 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/useAuth";
 import {
     Monitor,
-    LayoutDashboard,
-    Cpu,
-    History,
-    Users,
     LogOut,
     Menu,
     X,
     ChevronRight,
 } from "lucide-react";
-
-// Navigation items — each has a path, label, and icon
-const navItems = [
-    { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
-    { to: "/admin/devices", label: "Devices", icon: Cpu },
-    { to: "/admin/history", label: "Assignment History", icon: History },
-    { to: "/admin/users", label: "Staff Members", icon: Users },
-];
 
 // Add this small component ABOVE the AdminLayout function
 function NavItem({ to, label, icon, end }) {
@@ -55,7 +43,7 @@ function NavItem({ to, label, icon, end }) {
     );
 }
 
-export default function AppLayout({ children }) {
+export default function AppLayout({ children, navItems }) {
     const { profile, logout } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
