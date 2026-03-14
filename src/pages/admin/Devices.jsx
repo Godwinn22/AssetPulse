@@ -431,7 +431,12 @@ function AssignModal({ device, onClose, onAssigned }) {
             try {
                 const { data, error } = await supabase
                     .from("profiles")
-                    .select("id, full_name, department, email")
+                    .select(
+                        `
+    id, full_name, email,
+    department:departments(name)
+  `,
+                    )
                     .eq("role", "staff")
                     .order("full_name");
                 if (error) throw error;
@@ -544,7 +549,7 @@ function AssignModal({ device, onClose, onAssigned }) {
                                 {staffList.map((s) => (
                                     <option key={s.id} value={s.id}>
                                         {s.full_name} —{" "}
-                                        {s.department || "No Department"}
+                                        {s.department?.name || "No Department"}
                                     </option>
                                 ))}
                             </select>
