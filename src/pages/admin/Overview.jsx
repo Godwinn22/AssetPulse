@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
+import DeviceTypeChart from "../../components/shared/charts/DeviceTypeChart";
 import {
     Cpu,
     CheckCircle2,
@@ -47,6 +48,7 @@ export default function Overview() {
         assignedValue: 0,
     });
     const [recentAssignments, setRecentAssignments] = useState([]);
+    const [deviceTypeData, setDeviceTypeData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -96,6 +98,24 @@ export default function Overview() {
                         0,
                     ),
                 });
+
+                // ── Transform devices into chart data ──
+                // Step 1: Count devices by type using reduce()
+                const typeCounts = devices.reduce((tally, device) => {
+                    const type = device.type;
+                    tally[type] = (tally[type] || 0) + 1;
+                    return tally;
+                }, {});
+
+                // Step 2: Convert to array shape Recharts needs
+                const chartData = Object.entries(typeCounts).map(
+                    ([name, value]) => ({
+                        name,
+                        value,
+                    }),
+                );
+
+                setDeviceTypeData(chartData);
             }
 
             setRecentAssignments(recent || []);
@@ -182,6 +202,17 @@ export default function Overview() {
                     iconColor="text-rose-600"
                     sub="Value of devices in use"
                 />
+            </div>
+
+            {/* ── Charts section ── */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+                <h2 className="font-semibold text-gray-900 mb-1">
+                    Devices by Type
+                </h2>
+                <p className="text-gray-400 text-xs mb-6">
+                    Distribution of all devices in inventory
+                </p>
+                <DeviceTypeChart data={deviceTypeData} />
             </div>
 
             {/* ── Recent Assignments table ── */}
