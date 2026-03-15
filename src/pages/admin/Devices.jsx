@@ -250,7 +250,7 @@ function DeviceFormModal({ device, onClose, onSaved }) {
                             required
                             options={[
                                 { value: "available", label: "Available" },
-                                { value: "assigned", label: "Assigned" },
+                                // { value: "assigned", label: "Assigned" },
                                 {
                                     value: "under_repair",
                                     label: "Under Repair",
