@@ -20,7 +20,6 @@ export default function MyProfile() {
                     .single(); // why do we use .single? because we expect only one profile to match the id, and it gives us the profile object directly instead of an array
                 if (error) throw error;
                 setFullProfile(data);
-                console.log("Fetched full profile:", data);
             } catch (err) {
                 console.error(`Could not fetch profile ${err.message}`);
             } finally {
@@ -39,7 +38,6 @@ export default function MyProfile() {
                   year: "numeric",
               })
             : "-";
-    console.log("Full profile:", fullProfile);
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -66,7 +64,7 @@ export default function MyProfile() {
                     {/* Avatar circle — positioned to overlap the banner */}
                     <div
                         className="w-20 h-20 rounded-2xl bg-blue-100 border-4 border-white
-                          flex items-center justify-center -mt-10 mb-4 shadow-md"
+                          flex items-center justify-center -mt-7 mb-4 shadow-md"
                     >
                         <span className="text-blue-700 font-bold text-2xl">
                             {fullProfile?.full_name?.charAt(0).toUpperCase()}
